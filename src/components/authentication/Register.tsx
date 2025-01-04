@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { register } from "../../actions/auth.action";
 import { clearMessage } from "../../actions/message.action";
 import { AppDispatch, RootState } from "../../store";
+import '../../styles/components/auth.css';
 
 
 const Register = () => {

@@ -10,6 +10,7 @@ import Register from "../authentication/Register";
 import Profile from "./Profile";
 import Posts from "./Posts";
 import NavBar from "./NavBar";
+import Footer from "./Footer";
 
 const Navigation: FC = () => {
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
@@ -33,14 +34,14 @@ const Navigation: FC = () => {
     }, [currentUser]);
 
     return (
-        <>
+        <div className="layout-container">
             <NavBar 
                 currentUser={currentUser}
                 logOut={logOut}
                 showModeratorBoard={showModeratorBoard}
                 showAdminBoard={showAdminBoard}
             />
-            <main className="p-4">
+            <main className="main-content">
                 <Routes>
                     <Route index element={<Home />} />
                     <Route path="photos" element={<Gallery />} />
@@ -48,13 +49,10 @@ const Navigation: FC = () => {
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
                     <Route path="profile" element={<Profile />} />
-                    <Route path="search">
-                        <Route path="users" element={<div>Search Users</div>} />
-                        <Route path="photos" element={<div>Search Photos</div>} />
-                    </Route>
                 </Routes>
             </main>
-        </>
+            <Footer />
+        </div>
     );
 }
 

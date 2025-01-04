@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { login } from "../../actions/auth.action";
 import { clearMessage } from "../../actions/message.action";
 import { AppDispatch, RootState } from "../../store";
+import '../../styles/components/auth.css';
 
 const Login = () => {
   let navigate = useNavigate();

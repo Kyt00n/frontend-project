@@ -1,9 +1,10 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
+import '../../styles/components/navigation.css';
 
 interface User {
     username: string;
-    roles: string[];
+    roles?: string[];
 }
 
 interface NavBarProps {
@@ -20,63 +21,41 @@ const NavBar: FC<NavBarProps> = ({
     showAdminBoard
 }) => {
     return (
-        <nav className="bg-gray-800 p-4">
-            <div className="max-w-screen flex justify-between items-center">
-                <div className="flex gap-4">
-                    <Link to="/" className="text-white hover:text-gray-300">
-                        Home
-                    </Link>
-                    <Link to="/photos" className="text-white hover:text-gray-300">
+        <nav className="nav-container">
+            <div className="nav-content">
+                {/* Logo */}
+                <Link to="/" className="nav-logo">
+                    Social Media
+                </Link>
+
+                {/* Navigation Links */}
+                <div className="nav-links">
+                    <Link to="/photos" className="nav-link">
                         Photos
                     </Link>
-                    <Link to="/posts" className="text-white hover:text-gray-300">
+                    <Link to="/posts" className="nav-link">
                         Posts
                     </Link>
-                    {showModeratorBoard && (
-                        <Link to="/mod" className="text-white hover:text-gray-300">
-                            Moderator Board
-                        </Link>
-                    )}
-                    {showAdminBoard && (
-                        <Link to="/admin" className="text-white hover:text-gray-300">
-                            Admin Board
-                        </Link>
-                    )}
                 </div>
 
-                <div className="flex items-center gap-4">
+                {/* Auth Section */}
+                <div className="nav-auth">
                     {currentUser ? (
                         <>
-                            <div className="relative">
-                                <button className="text-white hover:text-gray-300">
-                                    Search
-                                </button>
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg hidden hover:block">
-                                    <Link to="/search/users" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-                                        Search Users
-                                    </Link>
-                                    <Link to="/search/photos" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-                                        Search Photos
-                                    </Link>
-                                </div>
-                            </div>
-                            <Link to="/profile" className="text-white hover:text-gray-300">
+                            <Link to="/profile" className="nav-link">
                                 {currentUser.username}
                             </Link>
-                            <button
-                                onClick={logOut}
-                                className="text-white hover:text-gray-300"
-                            >
+                            <button onClick={logOut} className="btn btn-danger">
                                 Logout
                             </button>
                         </>
                     ) : (
                         <>
-                            <Link to="/login" className="text-white hover:text-gray-300">
+                            <Link to="/login" className="btn btn-secondary">
                                 Login
                             </Link>
-                            <Link to="/register" className="text-white hover:text-gray-300">
-                                Register
+                            <Link to="/register" className="btn btn-primary">
+                                Sign Up
                             </Link>
                         </>
                     )}
