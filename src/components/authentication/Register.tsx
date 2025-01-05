@@ -7,6 +7,7 @@ import { register } from "../../actions/auth.action";
 import { clearMessage } from "../../actions/message.action";
 import { AppDispatch, RootState } from "../../store";
 import '../../styles/components/auth.css';
+import { User } from "../../entities/User";
 
 
 const Register = () => {
@@ -48,10 +49,10 @@ const Register = () => {
 
   const handleRegister = (formValue: {username: string, email: string, password: string}) => {
     const { username, email, password } = formValue;
-
+    const user = new User(username, email, password, "user");
     setSuccessful(false);
 
-    dispatch(register({ username, email, password }))
+    dispatch(register(user))
       .unwrap()
       .then(() => {
         setSuccessful(true);

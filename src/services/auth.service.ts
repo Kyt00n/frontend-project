@@ -1,22 +1,22 @@
 import axios from 'axios';
+import {  User } from '../entities/User';
 // todo: change to fetch api instead of axios
-const API_URL = 'http://localhost:3000/api/auth/';
+const API_URL = 'http://localhost:3001/api/auth/';
 
-const register = (username:string, 
-    email:string, 
-    password:string) => {
+const register = (user: User) => {
   return axios.post(API_URL + 'signup', {
-    username,
-    email,
-    password
+    username: user.username,
+    email: user.email,
+    password: user.password,
+    role: user.role
   });
 };
 
-const login = (username: string, password:string) => {
+const login = (user: User) => {
   return axios
     .post(API_URL + 'signin', {
-      username,
-      password
+      username: user.username,
+      password: user.password
     })
     .then(response => {
       if (response.data.accessToken) {
