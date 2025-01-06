@@ -42,16 +42,17 @@ const Login = () => {
 
     dispatch(login(loginUser))
       .unwrap()
-      .then(() => {
-        navigate("/profile");
-        window.location.reload();
-      })
+      // .then(() => {
+      //   navigate("/profile");
+      //   window.location.reload();
+      // })
       .catch(() => {
         setLoading(false);
       });
   };
 
   if (isLoggedIn) {
+    console.log("User is already logged in");
     return <Navigate to="/profile" />;
   }
 
