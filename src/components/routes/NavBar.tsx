@@ -1,11 +1,8 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/components/navigation.css';
+import { User } from '../../entities/User';
 
-interface User {
-    username: string;
-    roles?: string[];
-}
 
 interface NavBarProps {
     currentUser: User | null;
@@ -20,6 +17,7 @@ const NavBar: FC<NavBarProps> = ({
     showModeratorBoard,
     showAdminBoard
 }) => {
+
     return (
         <nav className="nav-container">
             <div className="nav-content">
@@ -40,7 +38,7 @@ const NavBar: FC<NavBarProps> = ({
 
                 {/* Auth Section */}
                 <div className="nav-auth">
-                    {currentUser ? (
+                    {currentUser && currentUser.id ? (
                         <>
                             <Link to="/profile" className="nav-link">
                                 {currentUser.username}

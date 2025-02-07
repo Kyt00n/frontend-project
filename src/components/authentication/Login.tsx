@@ -10,7 +10,7 @@ import { clearMessage } from "../../actions/message.action";
 import { AppDispatch, RootState } from "../../store";
 import '../../styles/components/auth.css';
 import { User } from "../../entities/User";
-
+import { TemporaryUser } from "../../entities/TemporaryUser";
 const Login = () => {
   let navigate = useNavigate();
 
@@ -37,7 +37,7 @@ const Login = () => {
 
   const handleLogin = (formValue:{ username: string; password: string }) => {
     const { username, password } = formValue;
-    const loginUser = new User(username, "", password, "user");
+    const loginUser = new TemporaryUser(username, "", password, "user");
     setLoading(true);
 
     dispatch(login(loginUser))

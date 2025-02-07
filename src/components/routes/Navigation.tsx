@@ -11,12 +11,13 @@ import Profile from "./Profile";
 import Posts from "./Posts";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
+import { User } from "../../entities/User";
 
 const Navigation: FC = () => {
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
     const [showAdminBoard, setShowAdminBoard] = useState(false);
 
-    const { user: currentUser } = useSelector((state: RootState) => state.auth);
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}') as User;
     const dispatch = useDispatch<AppDispatch>();
 
     const logOut = useCallback(() => {
@@ -25,8 +26,8 @@ const Navigation: FC = () => {
 
     useEffect(() => {
         if (currentUser) {
-            setShowModeratorBoard(currentUser.roles?.includes("ROLE_MODERATOR") || false);
-            setShowAdminBoard(currentUser.roles?.includes("ROLE_ADMIN") || false);
+            setShowModeratorBoard(currentUser.role?.includes("ROLE_MODERATOR") || false);
+            setShowAdminBoard(currentUser.role?.includes("ROLE_ADMIN") || false);
         } else {
             setShowModeratorBoard(false);
             setShowAdminBoard(false);

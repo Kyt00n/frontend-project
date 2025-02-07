@@ -2,10 +2,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message.action";
 import AuthService from "../services/auth.service";
 import { User } from "../entities/User";
+import { TemporaryUser } from "../entities/TemporaryUser";
 
 export const register = createAsyncThunk(
   "auth/register",
-  async (user: User, thunkAPI) => {
+  async (user: TemporaryUser, thunkAPI) => {
     try {
       const response = await AuthService.register(user);
       thunkAPI.dispatch(setMessage(response.data.message));
@@ -25,7 +26,7 @@ export const register = createAsyncThunk(
 
 export const login = createAsyncThunk(
   "auth/login",
-  async (user: User, thunkAPI) => {
+  async (user: TemporaryUser, thunkAPI) => {
     try {
       const data = await AuthService.login(user);
       return { user: data };

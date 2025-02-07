@@ -3,24 +3,23 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { RootState } from '../../store';
 import '../../styles/components/posts.css';
+import { User } from '../../entities/User';
 
 const API_URL = 'http://localhost:3001/api/posts';
 
 interface Comment {
   id: number;
   postId: number;
+  date: string;
   content: string;
-  user: {
-    id: number;
-    username: string;
     email: string;
-  };
 }
 
 interface Post {
   id: number;
   title: string;
   body: string;
+  date: string;
   userId: number;
   imageUrl?: string;
   comments?: Comment[];
@@ -33,24 +32,10 @@ const Posts: FC = () => {
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const [newPostContent, setNewPostContent] = useState('');
   const [commentContents, setCommentContents] = useState<{ [key: number]: string }>({});
-  const { user: currentUser } = useSelector((state: RootState) => state.auth);
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}') as User;
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get(`${API_URL}?limit=2`);
-        const postsWithImages = response.data.data.map((post: Post) => ({
-          ...post,
-          imageUrl: Math.random() > 0.5 ? `https://picsum.photos/800/400?random=${post.id}` : undefined
-        }));
-        setPosts(postsWithImages);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-        setLoading(false);
-      }
-    };
-
+    console.log('current user', currentUser);
     fetchPosts();
   }, []);
 
@@ -62,7 +47,7 @@ const Posts: FC = () => {
         userId: currentUser.id
       });
       setNewPostContent('');
-      setPosts([response.data.data, ...posts]);
+        fetchPosts()
     } catch (error) {
       console.error('Error creating post:', error);
     }
@@ -72,31 +57,21 @@ const Posts: FC = () => {
     const content = commentContents[postId];
     if (!content?.trim()) return;
     try {
+        if (!currentUser) {
+            throw new Error('User not logged in');
+        }
       const response = await axios.post(`${API_URL}/comment/${postId}`, {
         content,
         userId: currentUser.id
       });
       setCommentContents(prev => ({ ...prev, [postId]: '' }));
-      setPosts(prev =>
-        prev.map(post =>
-          post.id === postId
-            ? { ...post, comments: [...(post.comments || []), response.data.data] }
-            : post
-        )
-      );
+      fetchPosts();
     } catch (error) {
       console.error('Error creating comment:', error);
     }
   };
 
-  const formatDate = () => {
-    return new Date().toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+  
 
   const toggleComments = (postId: number) => {
     setActiveComments(prev =>
@@ -112,6 +87,22 @@ const Posts: FC = () => {
         ? prev.filter(id => id !== postId)
         : [...prev, postId]
     );
+  };
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get(`${API_URL}?limit=10`);
+      console.log('Posts:', response.data.data);
+      console.log('current user', currentUser);
+      const postsWithImages = response.data.data.map((post: Post) => ({
+        ...post,
+        imageUrl: Math.random() > 0.5 ? `https://picsum.photos/800/400?random=${post.id}` : undefined
+      }));
+      setPosts(postsWithImages);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -140,15 +131,13 @@ const Posts: FC = () => {
       {posts.map(post => (
         <div key={post.id} className="post-card">
           <div className="post-header">
-            <div className="post-user-avatar"></div>
             <div className="post-user-info">
-              <div className="post-username">User {post.userId}</div>
-              <div className="post-timestamp">{formatDate()}</div>
+              <div className="post-username">{post.title}</div>
+              <div className="post-timestamp">{post.date}</div>
             </div>
           </div>
 
           <div className="post-content">
-            <h3>{post.title}</h3>
             <p>{post.body}</p>
             {post.imageUrl && (
               <img
@@ -158,8 +147,8 @@ const Posts: FC = () => {
               />
             )}
           </div>
-
-          <div className="post-actions">
+        {
+            currentUser && <div className="post-actions">
             <button
               className={`action-button like-button ${likedPosts.includes(post.id) ? 'active' : ''}`}
               onClick={() => toggleLike(post.id)}
@@ -178,6 +167,8 @@ const Posts: FC = () => {
               </button>
             )}
           </div>
+        }
+          
 
           {activeComments.includes(post.id) && (
             <div className="comment-box">
@@ -205,8 +196,8 @@ const Posts: FC = () => {
               {post.comments.map(comment => (
                 <div key={comment.id} className="comment">
                   <div className="comment-header">
-                    <span className="comment-username">{comment.user.email}</span>
-                    <span className="comment-timestamp">{formatDate()}</span>
+                    <span className="comment-username">{comment.email}</span>
+                    <span className="comment-timestamp">{post.date}</span>
                   </div>
                   <div className="comment-content">
                     {comment.content}

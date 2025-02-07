@@ -1,10 +1,11 @@
 import axios from 'axios';
 import {  User } from '../entities/User';
+import { TemporaryUser } from '../entities/TemporaryUser';
 // Add this line to import the log object
 // todo: change to fetch api instead of axios
 const API_URL = 'http://localhost:3001/api/auth/';
 
-const register = (user: User) => {
+const register = (user: TemporaryUser) => {
   return axios.post(`${API_URL}signup`, {
     username: user.username,
     email: user.email,
@@ -13,7 +14,7 @@ const register = (user: User) => {
   });
 };
 
-const login = (user: User) => {
+const login = (user: TemporaryUser) => {
   return axios
     .post(`${API_URL}signin`, {
       username: user.username,
@@ -21,7 +22,6 @@ const login = (user: User) => {
     }, {withCredentials: true})
     .then(response => {
       if (response && response.data && response.data.data.accessToken) {
-        console.log(response.data.data.user);
         localStorage.setItem('user', JSON.stringify(response.data.data.user));
         console.log('User logged in');
       } else {
