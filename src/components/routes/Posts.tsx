@@ -4,12 +4,21 @@ import axios from 'axios';
 import { RootState } from '../../store';
 import '../../styles/components/posts.css';
 
+const API_URL = 'http://localhost:3001/api/posts';
+
 interface Comment {
     id: number;
-    postId: number;
-    name: string;
-    email: string;
-    body: string;
+    content: string | null;
+    user: {
+        id: number;
+        username: string;
+        email: string;
+    } | null;
+    post: {
+        id: number;
+        text: string;
+        images: string[];
+    };
 }
 
 interface Post {
@@ -17,7 +26,7 @@ interface Post {
     title: string;
     body: string;
     userId: number;
-    imageUrl?: string;
+    imageUrls?: string;
     comments?: Comment[];
 }
 
@@ -31,17 +40,16 @@ const Posts: FC = () => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const postsResponse = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=5');
+                const postsResponse = await axios.get(`${API_URL}?limit=2`);
+                // const postsResponse = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=2');
+                console.log(postsResponse.data);
                 const postsWithComments = await Promise.all(
-                    postsResponse.data.map(async (post: Post) => {
-                        const commentsResponse = await axios.get(
-                            `https://jsonplaceholder.typicode.com/posts/${post.id}/comments?_limit=3`
-                        );
+                    postsResponse.data.data.map(async (post: Post) => {
                         // Add random image to some posts
+                        
                         const hasImage = Math.random() > 0.5;
                         return { 
-                            ...post, 
-                            comments: commentsResponse.data,
+                            ...post,
                             imageUrl: hasImage ? `https://picsum.photos/800/400?random=${post.id}` : undefined
                         };
                     })
@@ -114,9 +122,9 @@ const Posts: FC = () => {
                     <div className="post-content">
                         <h3>{post.title}</h3>
                         <p>{post.body}</p>
-                        {post.imageUrl && (
+                        {post.imageUrls && (
                             <img 
-                                src={post.imageUrl} 
+                                src={post.imageUrls} 
                                 alt={post.title}
                                 className="post-image"
                             />
@@ -161,11 +169,11 @@ const Posts: FC = () => {
                             {post.comments.map(comment => (
                                 <div key={comment.id} className="comment">
                                     <div className="comment-header">
-                                        <span className="comment-username">{comment.email}</span>
+                                        <span className="comment-username">{comment.user ? comment.user.email : 'Unknown User'}</span>
                                         <span className="comment-timestamp">{formatDate()}</span>
                                     </div>
                                     <div className="comment-content">
-                                        {comment.body}
+                                        {comment.content}
                                     </div>
                                 </div>
                             ))}

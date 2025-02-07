@@ -5,7 +5,7 @@ import {  User } from '../entities/User';
 const API_URL = 'http://localhost:3001/api/auth/';
 
 const register = (user: User) => {
-  return axios.post(API_URL + 'signup', {
+  return axios.post(`${API_URL}signup`, {
     username: user.username,
     email: user.email,
     password: user.password,
@@ -15,7 +15,7 @@ const register = (user: User) => {
 
 const login = (user: User) => {
   return axios
-    .post(API_URL + 'signin', {
+    .post(`${API_URL}signin`, {
       username: user.username,
       password: user.password
     }, {withCredentials: true})
