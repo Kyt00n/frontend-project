@@ -1,12 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message.action";
 import AuthService from "../services/auth.service";
+import { User } from "../entities/User";
 
 export const register = createAsyncThunk(
   "auth/register",
-  async ({ username, email, password }: { username: string; email: string; password: string }, thunkAPI) => {
+  async (user: User, thunkAPI) => {
     try {
-      const response = await AuthService.register(username, email, password);
+      const response = await AuthService.register(user);
       thunkAPI.dispatch(setMessage(response.data.message));
       return response.data;
     } catch (error: any) {
@@ -24,9 +25,9 @@ export const register = createAsyncThunk(
 
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ username, password }: { username: string; password: string }, thunkAPI) => {
+  async (user: User, thunkAPI) => {
     try {
-      const data = await AuthService.login(username, password);
+      const data = await AuthService.login(user);
       return { user: data };
     } catch (error: any) {
       const message =

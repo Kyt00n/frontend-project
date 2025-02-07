@@ -9,6 +9,7 @@ import { login } from "../../actions/auth.action";
 import { clearMessage } from "../../actions/message.action";
 import { AppDispatch, RootState } from "../../store";
 import '../../styles/components/auth.css';
+import { User } from "../../entities/User";
 
 const Login = () => {
   let navigate = useNavigate();
@@ -36,20 +37,22 @@ const Login = () => {
 
   const handleLogin = (formValue:{ username: string; password: string }) => {
     const { username, password } = formValue;
+    const loginUser = new User(username, "", password, "user");
     setLoading(true);
 
-    dispatch(login({ username, password }))
+    dispatch(login(loginUser))
       .unwrap()
-      .then(() => {
-        navigate("/profile");
-        window.location.reload();
-      })
+      // .then(() => {
+      //   navigate("/profile");
+      //   window.location.reload();
+      // })
       .catch(() => {
         setLoading(false);
       });
   };
 
   if (isLoggedIn) {
+    console.log("User is already logged in");
     return <Navigate to="/profile" />;
   }
 

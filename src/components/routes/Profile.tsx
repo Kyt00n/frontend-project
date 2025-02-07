@@ -2,11 +2,12 @@ import React from "react";
 import { Navigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import { RootState } from '../../store';
+import { User } from "../../entities/User";
 
 const Profile = () => {
-  const { user: currentUser } = useSelector((state:RootState) => state.auth);
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}') as User;
 
-  if (!currentUser) {
+  if (!currentUser.username) {
     return <Navigate to="/login" />;
   }
 
@@ -18,16 +19,10 @@ const Profile = () => {
         </h3>
       </header>
       <p>
-        <strong>Id:</strong> {currentUser.id}
-      </p>
-      <p>
         <strong>Email:</strong> {currentUser.email}
       </p>
       <strong>Authorities:</strong>
-      <ul>
-        {currentUser.roles &&
-          currentUser.roles.map((role: string, index: number) => <li key={index}>{role}</li>)}
-      </ul>
+      <strong>{currentUser.role}</strong>
     </div>
   );
 };
