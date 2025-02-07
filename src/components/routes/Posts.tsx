@@ -23,6 +23,7 @@ interface Post {
   userId: number;
   imageUrl?: string;
   comments?: Comment[];
+  likes?: number[];
 }
 
 const Posts: FC = () => {
@@ -70,7 +71,25 @@ const Posts: FC = () => {
       console.error('Error creating comment:', error);
     }
   };
+  const handleLike = async (postId: number) => {
+    try {
+      await axios.post(`${API_URL}/${postId}/like?userId=${currentUser.id}`);
+      fetchPosts(); // Refresh the posts by fetching the latest data
+    } catch (error) {
+      console.error('Error liking post:', error);
+    }
+  };
 
+  const handleUnlike = async (postId: number) => {
+    try {
+      await axios.post(`${API_URL}/${postId}/unlike?userId=${currentUser.id}`, {
+        userId: currentUser.id
+      });
+      fetchPosts(); // Refresh the posts by fetching the latest data
+    } catch (error) {
+      console.error('Error unliking post:', error);
+    }
+  };
   
 
   const toggleComments = (postId: number) => {
@@ -90,7 +109,7 @@ const Posts: FC = () => {
   };
   const fetchPosts = async () => {
     try {
-      const response = await axios.get(`${API_URL}?limit=10`);
+      const response = await axios.get(`${API_URL}?limit=100`);
       console.log('Posts:', response.data.data);
       console.log('current user', currentUser);
       const postsWithImages = response.data.data.map((post: Post) => ({
@@ -111,7 +130,7 @@ const Posts: FC = () => {
 
   return (
     <div className="posts-container">
-      {currentUser && (
+      {currentUser && currentUser.id && (
         <div className="post-card">
           <div className="post-content">
             <textarea
@@ -146,14 +165,15 @@ const Posts: FC = () => {
                 className="post-image"
               />
             )}
+            <span>{post.likes?.length || 0} Likes</span>     <span>{post.comments?.length || 0} Comments</span>
           </div>
+          
         {
-            currentUser && <div className="post-actions">
+            currentUser && currentUser.id && <div className="post-actions">
             <button
               className={`action-button like-button ${likedPosts.includes(post.id) ? 'active' : ''}`}
-              onClick={() => toggleLike(post.id)}
-            >
-              {likedPosts.includes(post.id) ? 'Liked' : 'Like'}
+              onClick={() => post.likes?.includes(currentUser.id) ? handleUnlike(post.id) : handleLike(post.id)}            >
+              {post.likes?.includes(currentUser.id) ? 'Unlike' : 'Like'}
             </button>
             <button
               className="action-button comment-button"

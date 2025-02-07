@@ -16,7 +16,7 @@ import { User } from "../../entities/User";
 const Navigation: FC = () => {
     const [showModeratorBoard, setShowModeratorBoard] = useState(false);
     const [showAdminBoard, setShowAdminBoard] = useState(false);
-
+    console.log(useSelector((state: RootState) => state.auth));
     const currentUser = JSON.parse(localStorage.getItem('user') || '{}') as User;
     const dispatch = useDispatch<AppDispatch>();
 
