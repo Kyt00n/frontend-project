@@ -9,10 +9,8 @@ import { login } from "../../actions/auth.action";
 import { clearMessage } from "../../actions/message.action";
 import { AppDispatch, RootState } from "../../store";
 import '../../styles/components/auth.css';
-import { User } from "../../entities/User";
 import { TemporaryUser } from "../../entities/TemporaryUser";
 const Login = () => {
-  let navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
 

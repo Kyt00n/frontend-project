@@ -1,5 +1,4 @@
 import axios from 'axios';
-import {  User } from '../entities/User';
 import { TemporaryUser } from '../entities/TemporaryUser';
 // Add this line to import the log object
 // todo: change to fetch api instead of axios

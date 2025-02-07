@@ -1,7 +1,5 @@
 import React, { FC, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import axios from 'axios';
-import { RootState } from '../../store';
 import '../../styles/components/posts.css';
 import { User } from '../../entities/User';
 
@@ -36,14 +34,13 @@ const Posts: FC = () => {
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}') as User;
 
   useEffect(() => {
-    console.log('current user', currentUser);
     fetchPosts();
   }, []);
 
   const handleCreatePost = async () => {
     if (!newPostContent.trim()) return;
     try {
-      const response = await axios.post(`${API_URL}/upload`, {
+      await axios.post(`${API_URL}/upload`, {
         text: newPostContent,
         userId: currentUser.id
       });
@@ -61,7 +58,7 @@ const Posts: FC = () => {
         if (!currentUser) {
             throw new Error('User not logged in');
         }
-      const response = await axios.post(`${API_URL}/comment/${postId}`, {
+      await axios.post(`${API_URL}/comment/${postId}`, {
         content,
         userId: currentUser.id
       });
@@ -100,18 +97,9 @@ const Posts: FC = () => {
     );
   };
 
-  const toggleLike = (postId: number) => {
-    setLikedPosts(prev =>
-      prev.includes(postId)
-        ? prev.filter(id => id !== postId)
-        : [...prev, postId]
-    );
-  };
   const fetchPosts = async () => {
     try {
       const response = await axios.get(`${API_URL}?limit=100`);
-      console.log('Posts:', response.data.data);
-      console.log('current user', currentUser);
       const postsWithImages = response.data.data.map((post: Post) => ({
         ...post,
         imageUrl: Math.random() > 0.5 ? `https://picsum.photos/800/400?random=${post.id}` : undefined

@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message.action";
 import AuthService from "../services/auth.service";
-import { User } from "../entities/User";
 import { TemporaryUser } from "../entities/TemporaryUser";
 
 export const register = createAsyncThunk(
