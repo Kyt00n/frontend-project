@@ -112,10 +112,10 @@
     border: 1px solid #2a2b36;
     border-radius: 4px;
     font-size: 1rem;
-    font-weight: 700;  /* Increased from 500 to 700 for bolder text */
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    letter-spacing: 0.5px;  /* Added slight letter spacing for better readability */
+    letter-spacing: 0.5px;
 }
 
 .login-form button.btn-block:hover,
