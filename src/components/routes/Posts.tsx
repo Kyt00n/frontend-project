@@ -2,27 +2,13 @@ import React, { FC, useState, useEffect } from 'react';
 import axios from 'axios';
 import '../../styles/components/posts.css';
 import { User } from '../../entities/User';
+import { Post } from '../../entities/Post';
 
 const API_URL = 'http://localhost:3001/api/posts';
 
-interface Comment {
-  id: number;
-  postId: number;
-  date: string;
-  content: string;
-    email: string;
-}
 
-interface Post {
-  id: number;
-  title: string;
-  body: string;
-  date: string;
-  userId: number;
-  imageUrl?: string;
-  comments?: Comment[];
-  likes?: number[];
-}
+
+
 
 const Posts: FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -95,6 +81,15 @@ const Posts: FC = () => {
         ? prev.filter(id => id !== postId)
         : [...prev, postId]
     );
+  };
+  
+  const handleDeletePost = async (postId: number) => {
+    try {
+      await axios.delete(`${API_URL}/${postId}`);
+      fetchPosts(); // Refresh the posts by fetching the latest data
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
   };
 
   const fetchPosts = async () => {
@@ -170,7 +165,9 @@ const Posts: FC = () => {
               Comment
             </button>
             {currentUser && post.userId === currentUser.id && (
-              <button className="action-button delete-button">
+              <button className="action-button delete-button"
+                onClick={() => handleDeletePost(post.id)}
+                >
                 Delete
               </button>
             )}

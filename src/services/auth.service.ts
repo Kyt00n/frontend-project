@@ -33,6 +33,7 @@ const login = (user: TemporaryUser) => {
 
 const logout = () => {
     localStorage.removeItem('user');
+    
 };
 
 const getCurrentUser = () => {
